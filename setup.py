@@ -10,7 +10,7 @@ from setuptools import setup
 def main():
     setup(
         name='TracSubTicketTypes',
-        version='0.1',
+        version='0.2dev',
         packages=['subtickettypes'],
         package_data={ 'subtickettypes': ['htdocs/*.js'] },
 
