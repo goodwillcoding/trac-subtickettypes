@@ -1,0 +1,5 @@
+0.1
+---
+
+-  Initial version, ported from trac-subcomponents with few fixes
+-  Support 1.x (tested with 1.0.1)
