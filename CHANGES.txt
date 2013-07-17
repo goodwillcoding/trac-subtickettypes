@@ -1,5 +1,15 @@
+next release
+============
+
+Features
+--------
+
+- add 0.12.x compatability (tested against 0.12.2)
+- clean up javascript
+- clean up setup.py
+
 0.1
----
+===
 
 -  Initial version, ported from trac-subcomponents with few fixes
 -  Support 1.x (tested with 1.0.1)
