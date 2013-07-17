@@ -9,6 +9,7 @@ from setuptools import setup
 
 install_requires = ['Trac>=0.12.2']
 
+
 # ........................................................................... #
 def main():
     setup(
@@ -20,14 +21,13 @@ def main():
         package_data={'subtickettypes': ['htdocs/*.js']},
         license='BSD',
         install_requires=install_requires,
-		packages = find_packages(),
         packages=['subtickettypes'],
         url='https://github.com/goodwillcoding/trac-subtickettypes',
         keywords='trac plugin ticket types subtickettypes',
         classifiers=[
             'Framework :: Trac',
             'Environment :: Web Environment',
-			'Framework :: Trac',
+            'Framework :: Trac',
             'License :: OSI Approved :: BSD License',
             'Natural Language :: English',
             'Operating System :: OS Independent',
