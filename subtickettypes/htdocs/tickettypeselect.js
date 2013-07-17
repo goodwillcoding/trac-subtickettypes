@@ -97,62 +97,71 @@ function getLeafsForSubTicketTypeLevel(level, prefix, forceEmptyLeafs) {
 /*
 	Event handler for when the user has changed the selected ticket type
  */
-function selectedTicketTypeChanged(elem) {
-	// Get the level of this select
-	var level = jQuery(this).prevAll('[class=subtickettype]').length + 1;
+function selectedTicketTypeChanged (evt, forceEmptyLeafs) {
+
+	var elem = jQuery(evt.target);
+	// Get the level of select element that triggered the event
+	var level = elem.prevAll('[class=subtickettype]').length + 1;
 
 	// Hide the deeper subtickettypes (if applicable)
-	jQuery(this).nextAll('[class=subtickettype]').hide();
+	elem.nextAll('[class=subtickettype]').hide();
 
 	// Check if the current selected value is an empty leaf
-	if (jQuery(this).val().length == 0) {
-		var prefix = ""
-		jQuery(this).prevAll('[class=subtickettype]').reverse()
-			.each(function() {
-				if (prefix.length != 0)
-					prefix += "/"
-				prefix += jQuery(this).val();
-			});
+	if (elem.val().length == 0) {
+		var prefix = "";
+		elem.prevAll('[class=subtickettype]').reverse()
+			.each(
+				function (index, select_elem) {
+					if (prefix.length != 0) {
+						prefix += "/"
+					}
+					prefix += jQuery(select_elem).val();
+				});
 		// Store the path of the previous leafs and end
-		jQuery(this).parent().find("input[type=hidden]").val(prefix);
+		elem.parent().find("input[type=hidden]").val(prefix);
 		return;
 	}
 
 	// Just store the new path if this is the 'highest' level
 	if (level == gTicketTypeMaxBranches) {
-		var prefix = ""
-		jQuery(this).parent().find('[class=subtickettype]').each(function() {
-			if (prefix.length != 0)
-				prefix += "/";
-			prefix += jQuery(this).val();
-		});
-		jQuery(this).parent().find("input[type=hidden]").val(prefix);
+		var prefix = "";
+		elem.parent().find('[class=subtickettype]')
+			.each(
+				function (index, select_elem) {
+					if (prefix.length != 0) {
+						prefix += "/";
+					}
+					prefix += jQuery(select_elem).val();
+				});
+
+		elem.parent().find("input[type=hidden]").val(prefix);
 		return;
 	}
 
 	// Empty the next selects
-	jQuery(this).nextAll('[class=subtickettype]').empty();
+	elem.nextAll('[class=subtickettype]').empty();
 
 	// Fill the next selects with the right options. Sometimes that only means
 	// that the next select is filled, at other times, we have to go deeper,
 	// for example when there are no empty leaves for a subtickettype.
 	var prefix = "";
-	jQuery(this).prevAll('[class=subtickettype]').reverse().each(function() {
-		prefix += jQuery(this).val();
-		prefix += "/";
-	});
-	prefix += jQuery(this).val();
+	elem.prevAll('[class=subtickettype]').reverse()
+		.each(
+			function (index, select_elem) {
+				prefix += jQuery(select_elem).val();
+				prefix += "/";
+			});
+	prefix += elem.val();
 
-	var currentSelector = jQuery(this);
+	var currentSelector = elem;
 	for (var i = level; i < gTicketTypeMaxBranches; i++) {
 		var items = getLeafsForSubTicketTypeLevel(i, prefix,
-			elem.data.forceEmptyLeafs);
+			evt.data.forceEmptyLeafs);
 
 		for (var j = 0; j < items.length; j++) {
-			currentSelector.next().append(jQuery("<option/>", {
-				value: items[j],
-				text: items[j]
-			}));
+			currentSelector.next()
+				.append(
+					jQuery("<option/>", {value: items[j], text: items[j]}));
 		}
 
 		// If there are any entries in the select to the right, show it
@@ -177,7 +186,7 @@ function selectedTicketTypeChanged(elem) {
 
 	// Update the current selected value. The prefix string has the complete
 	// path of the current selection
-	jQuery(this).parent().find("input[type=hidden]").val(prefix);
+	elem.parent().find("input[type=hidden]").val(prefix);
 }
 
 
@@ -202,13 +211,15 @@ function convertTicketTypeSelect(element, forceEmptyLeafs)
 	// Populate the global ticket type list if it has not been populated before
 	if ( gTicketTypeList.length == 0 ) {
 		var i = 0;
-		elem.find('option').each(function() {
-			gTicketTypeList[i] = jQuery(this).text().split("/");
-			gTicketTypeMaxBranches =
-				(gTicketTypeMaxBranches < gTicketTypeList[i].length ?
-					gTicketTypeList[i].length : gTicketTypeMaxBranches);
-			i++;
-		});
+		elem.find('option')
+			.each(
+				function (index, option_elem) {
+					gTicketTypeList[i] = jQuery(option_elem).text().split("/");
+					gTicketTypeMaxBranches =
+						(gTicketTypeMaxBranches < gTicketTypeList[i].length ?
+	    				gTicketTypeList[i].length : gTicketTypeMaxBranches);
+					i++;
+				});
 
 		gTicketTypeList.sort(); // so Trac can be lazy
 	}
@@ -218,8 +229,15 @@ function convertTicketTypeSelect(element, forceEmptyLeafs)
 		parent.append(jQuery(document.createElement('select'))
 			.attr('id', 'subtickettype-selector' + gTicketTypeCount + '-' + i)
 			.attr('class', 'subtickettype')
-			.change({forceEmptyLeafs: forceEmptyLeafs},
-					selectedTicketTypeChanged));
+            .change(
+	             // this is to accomodate jQuery 1.4.2 in trac 0.12
+	             // since the .change event there does not support
+	             // passing additional data
+	             function (evt) {
+	             	 evt.data = {forceEmptyLeafs: forceEmptyLeafs};
+	                 selectedTicketTypeChanged(evt, forceEmptyLeafs)
+	             }
+             ));
 	}
 
 	// Store the current selected item
@@ -292,23 +310,26 @@ window.gTicketTypeCount = 0;
   We should be called after the ticket type has been created if the browser
   follows the DOM way of thinking
  */
-function convertQueryTicketType() {
-	jQuery('tr.type td.filter select').each(function () {
-		if (this.name.match(/[0-9]+_type/g) ) {
-			convertTicketTypeSelect(this, true)
-		}
+function convertQueryTicketType () {
+	jQuery('tr.type td.filter select')
+		.each(
+			function (index, select_elem) {
+				if (select_elem.name.match(/[0-9]+_type/g) ) {
+					convertTicketTypeSelect(select_elem, true)
+				}
 	});
 }
 
 
 /* ......................................................................... */
-function convertBatchModifyTicketType() {
-	jQuery('#batchmod_type td.batchmod_property select').each(
-		function () {
-			if (this.name == "batchmod_value_type") {
-				convertTicketTypeSelect(this, false);
-			}
-		});
+function convertBatchModifyTicketType () {
+	jQuery('#batchmod_type td.batchmod_property select')
+		.each(
+			function (index, select_elem) {
+				if (select_elem.name == "batchmod_value_type") {
+					convertTicketTypeSelect(select_elem, false);
+				}
+			});
 }
 
 
@@ -360,9 +381,11 @@ function initializeTicketTypes() {
 	}
 
 	// Query page: existing filters
-	jQuery('tr.type td.filter select').each( function () {
-		convertTicketTypeSelect(this, true)
-	});
+	jQuery('tr.type td.filter select')
+		.each(
+			function (index, select_elem) {
+				convertTicketTypeSelect(select_elem, true)
+			});
 
 	// Ticket/Newticket page: tickettype field
 	// Original comment: Opera picks up .names in getElementById(), hence it
