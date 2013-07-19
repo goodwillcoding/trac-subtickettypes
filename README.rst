@@ -1,8 +1,8 @@
 Subtickettypes in Trac
 ======================
 
-The current version is ready for Trac 1.0. There are older, unmaintained,
-versions for Trac 0.12 and Trac 0.11.
+The current version is ready for Trac 1.0.x and 0.12.x
+
 
 What is it?
 -----------
@@ -10,11 +10,6 @@ What is it?
 This plugin alters Trac's behavior so that the interface supports multiple
 layers of types. In project with lots of types, rearranging these
 types into several layers can clear up the list of tickets and subtickets.
-
-This plugin was based heavily on subcomponents plugin by
-"Niels Sascha Reedijk" located here:
-http://hg.haiku-os.org/trac-subcomponent,
-http://trac-hacks.org/wiki/SubcomponentsPlugin
 
 What is it not?
 ---------------
@@ -44,3 +39,17 @@ standard type admin page. If you enter the following ticket types:
 
 Then the user interface will show the ``development`` and ``release`` as a
 subtickettypes of the ``task`` type.
+
+Support
+-------
+
+You can get help on the plugin by visitng Freenode #pyramid channel
+and pinging goodwill.
+
+Acknowledgment
+--------------
+
+This plugin was based heavily on subcomponents plugin by
+"Niels Sascha Reedijk" located here:
+http://hg.haiku-os.org/trac-subcomponent,
+http://trac-hacks.org/wiki/SubcomponentsPlugin

@@ -13,9 +13,9 @@ install_requires = ['Trac>=0.12.2']
 # ........................................................................... #
 def main():
     setup(
-        version='0.3dev',
+        version='0.2.1',
         description='Provides support for sub ticket types in the Trac interface.',
-        name='TracSubTicketTypes',
+        name='trac-subtickettypes',
         author='Michael R',
         author_email='',
         package_data={'subtickettypes': ['htdocs/*.js']},
