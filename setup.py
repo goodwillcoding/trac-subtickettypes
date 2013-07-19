@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
- #
- # Copyright 2009, Michael R <none@example.com>
- # All rights reserved. Distributed under the terms of the MIT License.
- #
+#
+# Copyright 2009, Michael R <none@example.com>
+# All rights reserved. Distributed under the terms of the MIT License.
+#
 
 from setuptools import setup
 
